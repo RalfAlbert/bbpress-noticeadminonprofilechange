@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Notice Admin On Profile Change v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-01-05 04:49:36+0000\n"
+"PO-Revision-Date: 2014-01-05 05:05:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -128,7 +128,7 @@ msgstr "Bitte geben Sie die E-Mail Adresse ein an die der Bericht gesendet werde
 #: classes/noticeadminonprofilechange_menupage.php:312
 #@ noticeadminonprofilechange
 msgid "Please enter the subject for the mails. Use {user} as placeholder for the username from the changed profile."
-msgstr "Bitte geben Sie den Betreff für die E-Mails ein. Benutzen Sie \\\"{user}\\\" als Platzhalter für den Namen des Benutzers dessen Profil geändert wurde."
+msgstr "Bitte geben Sie den Betreff für die E-Mails ein. Benutzen Sie {user} als Platzhalter für den Namen des Benutzers dessen Profil geändert wurde."
 
 #: classes/noticeadminonprofilechange_menupage.php:334
 #@ noticeadminonprofilechange
