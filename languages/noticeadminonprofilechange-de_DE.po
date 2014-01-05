@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Notice Admin On Profile Change v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-01-04 05:29:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: classes/sendmail.php:83
+#@ noticeadminonprofilechange
+msgid "Changed fields:"
+msgstr "Geänderte Felder:"
+
+#: classes/sendmail.php:81
+#@ noticeadminonprofilechange
+msgid "Profile from user {user} was changed"
+msgstr "Profil von Benutzer {user} wurde geändert"
+
+#: classes/sendmail.php:183
+#: classes/sendmail.php:185
+#@ noticeadminonprofilechange
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#. translators: plugin header field 'Name'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "Notice Admin On Profile Change"
+msgstr "Benachrichtige den Administrator bei Profiländerungen"
+
+#. translators: plugin header field 'PluginURI'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "http://yoda.neun12.de"
+msgstr "http://yoda.neun12.de"
+
+#. translators: plugin header field 'Description'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile."
+msgstr "Benachrichtigt den Administrator per E-Mail wenn ein Profil geändert wurde. Arbeitet mit den normalen WordPress Benutzerprofilen und den BuddyPress XProfiles zusammen."
+
+#. translators: plugin header field 'Author'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "Ralf Albert"
+msgstr "Ralf Albert"
+
+#. translators: plugin header field 'AuthorURI'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "http://yoda.neun12.de/"
+msgstr "http://yoda.neun12.de/"
+
+#. translators: plugin header field 'Version'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "1.0"
+msgstr "1.0"
+
