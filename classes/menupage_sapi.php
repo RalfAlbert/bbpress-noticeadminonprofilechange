@@ -13,6 +13,12 @@ abstract class MenuPage_SAPI
 {
 
 	/**
+	 * Var for the used textdomain
+	 * @var string
+	 */
+	protected $textdomain = '';
+
+	/**
 	 * Array for sections
 	 * @var array
 	 */
@@ -138,7 +144,7 @@ abstract class MenuPage_SAPI
 		foreach ( $this->sections as $id => $args ) {
 
 			$title = isset( $args['title'] ) ?
-				esc_html( $args['title'] ) : __( 'Section #' ) . $number;
+				esc_html( $args['title'] ) : __( 'Section #', $this->textdomain ) . $number;
 
 			$callback =  isset( $args['callback'] ) ?
 				array ( $this, $args['callback'] ) : '';
@@ -163,7 +169,7 @@ abstract class MenuPage_SAPI
 				$section = $args['section'];
 
 			$title = isset( $args['title'] ) ?
-				esc_html( $args['title'] ) : __( 'Section #' ) . $number;
+				esc_html( $args['title'] ) : __( 'Section #', $this->textdomain ) . $number;
 
 			$callback =  isset( $args['callback'] ) ?
 				array ( $this, $args['callback'] ) : '';

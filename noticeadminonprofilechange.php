@@ -82,7 +82,7 @@ function noticeadminonprofilechange_textdomain() {
 function noticeadminonprofilechange_menupage() {
 
 	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
-	$pluginheaders->menupageobject = new NoticeAdminOnProfileChange_MenuPage();
+	$pluginheaders->menupageobject = new NoticeAdminOnProfileChange_MenuPage( $pluginheaders );
 
 }
 
@@ -141,6 +141,7 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	$sendmail = new NoticeAdminOnProfileChange_SendMail( $user_id );
 	$sendmail->menupageobject = $pluginheaders->menupageobject;
+	$sendmail->textdomain     = $pluginheaders->TextDomain;
 	$sendmail->send( $data );
 
 }
@@ -222,6 +223,7 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 
 		$sendmail = new NoticeAdminOnProfileChange_SendMail( $user );
 		$sendmail->menupageobject = $pluginheaders->menupageobject;
+		$sendmail->textdomain     = $pluginheaders->TextDomain;
 		$sendmail->send( $data );
 
 		$done = true;

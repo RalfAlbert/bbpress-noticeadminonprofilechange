@@ -24,7 +24,13 @@ class NoticeAdminOnProfileChange_SendMail
 	 * to the options stored in the database
 	 * @var object
 	 */
-	public $menupageobject = null;
+	protected  $menupageobject = null;
+
+	/**
+	 * Var for used textdomain
+	 * @var string
+	 */
+	protected $textdomain = '';
 
 	/**
 	 * User object
@@ -74,7 +80,7 @@ class NoticeAdminOnProfileChange_SendMail
 
 		$this->setup_user( $user );
 
-		$this->mail_body  = __( 'Changed fields:', 'noticeadminonprofilechange' );
+		$this->mail_body  = __( 'Changed fields:', $this->textdomain );
 		$this->mail_body .= sprintf( "\n%s\n", str_repeat( '-', 80 ) );
 		$this->mail_body .= '{changed}';
 
@@ -180,9 +186,9 @@ class NoticeAdminOnProfileChange_SendMail
 
 		if ( property_exists( $userdata, 'data' ) ) {
 			$this->user->name = ( property_exists( $userdata->data, 'user_login' ) ) ?
-				$userdata->data->user_login : __( 'Unknown', 'noticeadminonprofilechange' );
+				$userdata->data->user_login : __( 'Unknown', $this->textdomain );
 		} else {
-			$this->user->name = __( 'Unknown', 'noticeadminonprofilechange' );
+			$this->user->name = __( 'Unknown', $this->textdomain );
 		}
 
 	}
@@ -196,7 +202,7 @@ class NoticeAdminOnProfileChange_SendMail
 
 			$this->mail_to      = get_option( 'admin_email' );
 			$this->mail_subject = $this->formatter->sprintf(
-					__( 'Profile from user {user} was changed', 'noticeadminonprofilechange' ),
+					__( 'Profile from user {user} was changed', $this->textdomain ),
 					array(
 							'user' => $this->user->name
 					)

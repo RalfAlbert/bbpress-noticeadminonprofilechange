@@ -19,6 +19,13 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	const OPTION_KEY = 'noticeadminonprofilechange';
 
 	/**
+	 * Var for the used textdomain
+	 * @var string
+	 */
+	protected $textdomain = '';
+	protected static $textdomain_static = '';
+
+	/**
 	 * Option Name
 	 * @var string
 	 */
@@ -74,9 +81,16 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	/**
 	 * Constructor setup the class vars
 	 */
-	public function __construct() {
+	public function __construct( PluginHeaderReader $pluginheaders ) {
 
-		$this->menu_title = $this->page_title = __( 'Notice On Profile Change', 'noticeadminonprofilechange' );
+		/*
+		 * Setup the textdomain
+		 * The static textdomain is used in ::get_default_options()
+		 */
+		$this->textdomain = $pluginheaders->TextDomain;
+		self::$textdomain_static = $this->textdomain;
+
+		$this->menu_title = $this->page_title = __( 'Notice On Profile Change', $this->textdomain );
 
 		$this->option_group = self::OPTION_KEY;
 		$this->option_name  = self::OPTION_KEY;
@@ -89,7 +103,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		$this->sections = array (
 			// section-id => title, callback
 			'section_mail' => array (
-				'title' => __( 'Mail Settings', 'noticeadminonprofilechange' ),
+				'title' => __( 'Mail Settings', $this->textdomain ),
 // 				'callback' => 'section_mail'
 			)
 		);
@@ -99,31 +113,31 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 			// field-id => in-section, title, callback
 			'field_1' => array (
 				'section' => 'section_mail',
-				'title' => __( 'Mail Adress', 'noticeadminonprofilechange' ),
+				'title' => __( 'Mail Adress', $this->textdomain ),
 				'callback' => 'mail_field'
 			),
 
 			'field_2' => array (
 				'section' => 'section_mail',
-				'title' => __( 'Subject', 'noticeadminonprofilechange' ),
+				'title' => __( 'Subject', $this->textdomain ),
 				'callback' => 'subject_field'
 			),
 
 			'field_3' => array (
 					'section' => 'section_mail',
-					'title' => __( 'Send From Header', 'noticeadminonprofilechange' ),
+					'title' => __( 'Send From Header', $this->textdomain ),
 					'callback' => 'sendfrom_field'
 			),
 
 			'field_4' => array (
 					'section' => 'section_mail',
-					'title' => __( 'Mail CC', 'noticeadminonprofilechange' ),
+					'title' => __( 'Mail CC', $this->textdomain ),
 					'callback' => 'cc_field'
 			),
 
 			'field_5' => array (
 					'section' => 'section_mail',
-					'title' => __( 'Mail BCC', 'noticeadminonprofilechange' ),
+					'title' => __( 'Mail BCC', $this->textdomain ),
 					'callback' => 'bcc_field'
 			),
 
@@ -169,7 +183,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 
 		return array(
 				'mail_to'      => get_option( 'admin_email' ),
-				'mail_subject' => __( 'Profile from user {user} was changed', 'noticeadminonprofilechange' ),
+				'mail_subject' => __( 'Profile from user {user} was changed', self::$textdomain_static ),
 
 				'sendfrom_header_name' => '',
 				'sendfrom_header_mail' => get_option( 'admin_email' ),
@@ -262,13 +276,13 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 			return;
 
 		echo '<div class="wrap">';
-		printf( '<h1>%s</h1>', esc_html( __( 'Notice Admin On Profile Change', 'noticeadminonprofilechange' ) ) );
+		printf( '<h1>%s</h1>', esc_html( __( 'Notice Admin On Profile Change', $this->textdomain ) ) );
 		echo '<form action="options.php" method="post">';
 
 		settings_fields( $this->option_group );
 		do_settings_sections( $this->menu_slug );
 
-		submit_button( __( 'Save Changes', 'noticeadminonprofilechange' ), 'primary', 'submit_options', true );
+		submit_button( __( 'Save Changes', $this->textdomain ), 'primary', 'submit_options', true );
 
 		echo '</form>';
 		echo '</div>';
@@ -291,7 +305,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'<p>%s%s<br><input %s type="text" size="45" value="%s"></label></p>',
 			$this->get_label( $name ),
-			esc_html( __( 'Please enter the mail-adress where the report should be send to.', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'Please enter the mail-adress where the report should be send to.', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
@@ -309,7 +323,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'<p>%s%s<br><input %s type="text" size="80" value="%s"></label></p>',
 			$this->get_label( $name ),
-			esc_html( __( 'Please enter the subject for the mails. Use {user} as placeholder for the username from the changed profile.', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'Please enter the subject for the mails. Use {user} as placeholder for the username from the changed profile.', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
@@ -331,7 +345,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 			$this->get_label( $name ),
 			$this->get_name_arg( $name ),
 			$checked,
-			esc_html( __( 'Use a send-from header', 'noticeadminonprofilechange' ) )
+			esc_html( __( 'Use a send-from header', $this->textdomain ) )
 		);
 
 		$name  = 'sendfrom_header_name';
@@ -340,7 +354,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'<p>%s%s<br><input %s type="text" size="60" value="%s"></label></p>',
 			$this->get_label( $name ),
-			esc_html( __( 'Enter the name of the sender if you wish to use a send-from header. This field is optional, you can leave it blank.', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'Enter the name of the sender if you wish to use a send-from header. This field is optional, you can leave it blank.', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
@@ -351,7 +365,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'<p>%s%s<br><input %s type="text" size="60" value="%s"></label></p>',
 			$this->get_label( $name ),
-			esc_html( __( 'Enter the mail of the sender if you wish to use a send-from header. If this field is empty, the admin email will be used.', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'Enter the mail of the sender if you wish to use a send-from header. If this field is empty, the admin email will be used.', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
@@ -370,7 +384,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'%s%s<br><textarea %s cols="80" rows="5">%s</textarea></label>',
 			$this->get_label( $name ),
-			esc_html( __( 'If you wish to send the report as a CC, enter the adresses here. One adress per line!', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'If you wish to send the report as a CC, enter the adresses here. One adress per line!', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
@@ -390,7 +404,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 		printf(
 			'%s%s<br><textarea %s cols="80" rows="5">%s</textarea></label>',
 			$this->get_label( $name ),
-			esc_html( __( 'If you wish to send the report as a BCC, enter the adresses here. One adress per line!', 'noticeadminonprofilechange' ) ),
+			esc_html( __( 'If you wish to send the report as a BCC, enter the adresses here. One adress per line!', $this->textdomain ) ),
 			$this->get_name_arg( $name ),
 			$value
 		);
