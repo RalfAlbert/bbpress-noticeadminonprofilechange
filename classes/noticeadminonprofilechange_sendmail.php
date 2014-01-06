@@ -24,13 +24,13 @@ class NoticeAdminOnProfileChange_SendMail
 	 * to the options stored in the database
 	 * @var object
 	 */
-	protected  $menupageobject = null;
+	public  $menupageobject = null;
 
 	/**
 	 * Var for used textdomain
 	 * @var string
 	 */
-	protected $textdomain = '';
+	public $textdomain = '';
 
 	/**
 	 * User object
