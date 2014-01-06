@@ -4,6 +4,7 @@
  * @author Ralf Albert
  *
  */
+
 if ( ! class_exists( 'I_PluginHeaderReader' ) ) {
 
 interface I_PluginHeaderReader

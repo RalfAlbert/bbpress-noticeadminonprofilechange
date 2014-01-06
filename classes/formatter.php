@@ -2,7 +2,7 @@
 /**
  * Simple formatter class
  *
- * PHP version 5.3
+ * PHP version 5.2
  *
  * @category   PHP
  * @package    WordPress

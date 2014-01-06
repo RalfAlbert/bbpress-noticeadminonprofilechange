@@ -1,19 +1,5 @@
 <?php
 /**
- * WordPress/BuddyPress-Plugin Notice Admin On Profile Change
- *
- * PHP version 5.3
- *
- * @category   PHP
- * @package    WordPress
- * @subpackage BuddyPress
- * @author     Ralf Albert <me@neun12.de>
- * @license    GPLv3 http://www.gnu.org/licenses/gpl-3.0.txt
- * @version    1.0
- * @link       http://wordpress.com
- */
-
-/**
  * SendMail
  *
  * Class to sending a report about changed fields when a user profile was updated
