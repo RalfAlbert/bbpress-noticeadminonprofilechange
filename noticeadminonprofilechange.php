@@ -239,11 +239,12 @@ register_activation_hook(	__FILE__, 'noticeadminonprofilechange_on_activation' )
 register_uninstall_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 
 function noticeadminonprofilechange_on_activation(){
-	if ( ! class_exists( 'NoticeAdminOnProfileChange_MenuPage' ) )
-		require_once 'classes/menupage.php';
 
-	$defaults = MenuPage::get_default_options();
-	$key      = MenuPage::OPTION_KEY;
+	if ( ! class_exists( 'NoticeAdminOnProfileChange_MenuPage' ) )
+		require_once 'classes/noticeadminonprofilechange_menupage.php';
+
+	$defaults = NoticeAdminOnProfileChange_MenuPage::get_default_options();
+	$key      = NoticeAdminOnProfileChange_MenuPage::OPTION_KEY;
 
 	add_option( $key, $defaults );
 
@@ -252,9 +253,9 @@ function noticeadminonprofilechange_on_activation(){
 function noticeadminonprofilechange_on_uninstall(){
 
 	if ( ! class_exists( 'NoticeAdminOnProfileChange_MenuPage' ) )
-		require_once 'classes/menupage.php';
+		require_once 'classes/noticeadminonprofilechange_menupage.php';
 
-	$key = MenuPage::OPTION_KEY;
+	$key = NoticeAdminOnProfileChange_MenuPage::OPTION_KEY;
 
 	delete_option( $key );
 
