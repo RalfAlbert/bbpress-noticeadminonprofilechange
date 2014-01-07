@@ -70,21 +70,28 @@ class NoticeAdminOnProfileChange_SendMail
 
 	/**
 	 * The constructor setup the internal user object and the mail-templates
-	 *
-	 * @param	integer|object	$user	Depending on the hook (wordpress standard or bbPress xprofile)
 	 */
-	public function __construct( $user = null ) {
+	public function __construct() {
 
 		$this->formatter = new Formatter();
 		$this->formatter->set_delimiter( '{', '}' );
 
+		$this->temp_csv_file = WP_CONTENT_DIR . '/adminnotice_csv_temp.csv';
+
+	}
+
+	/**
+	 * Setup the user and mail_body
+	 *
+	 * @param	integer|object	$user	Depending on the hook (wordpress standard or bbPress xprofile)
+	 */
+	public function init( $user = null ) {
+
 		$this->setup_user( $user );
 
-		$this->mail_body  = __( 'Changed fields:', $this->textdomain );
-		$this->mail_body .= sprintf( "\n%s\n", str_repeat( '-', 80 ) );
+		$this->mail_body  = __( 'Changed fields', $this->textdomain );
+		$this->mail_body .= sprintf( "\r\n%s\r\n", str_repeat( '=', 80 ) );
 		$this->mail_body .= '{changed}';
-
-		$this->temp_csv_file = WP_CONTENT_DIR . '/adminnotice_csv_temp.csv';
 
 	}
 
@@ -136,8 +143,19 @@ class NoticeAdminOnProfileChange_SendMail
 
 		$out = '';
 
-		foreach ( $data as $field => $value )
-			$out .= sprintf( "%s| %s\r\n", str_pad( $field, 39, ' '), $value );
+		foreach ( $data as $group_name => $group ) {
+
+			$out .= sprintf(
+					"%s: %s\r\n%s\r\n",
+					__( 'Group', $this->textdomain ),
+					$group_name,
+					str_repeat( '-', 80 )
+			);
+
+			foreach ( $group as $field => $value )
+				$out .= sprintf( "%s| %s\r\n", str_pad( $field, 39, ' '), $value );
+
+		}
 
 		return $out;
 
@@ -154,12 +172,20 @@ class NoticeAdminOnProfileChange_SendMail
 
 		if ( true == $fp ) {
 
+			fwrite( $fp, sprintf( "\"%s\":,\"%s\"\r\n", __( 'User', $this->textdomain), addslashes( $this->user->name ) ) );
+
 			/*
 			 * field names and values are enclosed in double quotes and sanitized with addslashes()
 			 * if a field name or value contain an comma.
 			 */
-			foreach( $data as $field => $value )
-				fwrite( $fp, sprintf( "\"%s\",\"%s\"\r\n", addslashes( $field ), addslashes( $value ) ) );
+			foreach ( $data as $group_name => $group ) {
+
+				fwrite( $fp, sprintf( "\"%s\":,\"%s\"\r\n", __( 'Group', $this->textdomain), addslashes( $group_name ) ) );
+
+				foreach( $group as $field => $value )
+					fwrite( $fp, sprintf( "\"%s\",\"%s\"\r\n", addslashes( $field ), addslashes( $value ) ) );
+
+			}
 
 			fclose( $fp );
 
