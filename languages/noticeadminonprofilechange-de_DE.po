@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Notice Admin On Profile Change v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-01-05 05:05:51+0000\n"
+"PO-Revision-Date: 2014-01-07 23:29:16+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,25 +20,20 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: classes/noticeadminonprofilechange_sendmail.php:91
-#@ noticeadminonprofilechange
-msgid "Changed fields:"
-msgstr "Geänderte Felder:"
-
-#: classes/noticeadminonprofilechange_menupage.php:172
-#: classes/noticeadminonprofilechange_sendmail.php:213
+#: classes/noticeadminonprofilechange_menupage.php:186
+#: classes/noticeadminonprofilechange_sendmail.php:224
 #@ noticeadminonprofilechange
 msgid "Profile from user {user} was changed"
 msgstr "Profil von Benutzer {user} wurde geändert"
 
-#: classes/noticeadminonprofilechange_sendmail.php:197
-#: classes/noticeadminonprofilechange_sendmail.php:199
+#: classes/noticeadminonprofilechange_sendmail.php:208
+#: classes/noticeadminonprofilechange_sendmail.php:210
 #@ noticeadminonprofilechange
 msgid "Unknown"
 msgstr "Unbekannt"
 
 #. translators: plugin header field 'Name'
-#: classes/noticeadminonprofilechange_menupage.php:265
+#: classes/noticeadminonprofilechange_menupage.php:279
 #: noticeadminonprofilechange.php:0
 #@ noticeadminonprofilechange
 msgid "Notice Admin On Profile Change"
@@ -74,84 +69,100 @@ msgstr "http://yoda.neun12.de/"
 msgid "1.0"
 msgstr "1.0"
 
-#: classes/menupage_sapi.php:141
-#: classes/menupage_sapi.php:166
-#@ default
+#: classes/menupage_sapi.php:147
+#: classes/menupage_sapi.php:172
+#@ noticeadminonprofilechange
 msgid "Section #"
 msgstr ""
 
-#: classes/noticeadminonprofilechange_menupage.php:79
+#: classes/noticeadminonprofilechange_menupage.php:93
 #@ noticeadminonprofilechange
 msgid "Notice On Profile Change"
 msgstr "Benachrichtigung bei Profiländerungen"
 
-#: classes/noticeadminonprofilechange_menupage.php:92
+#: classes/noticeadminonprofilechange_menupage.php:106
 #@ noticeadminonprofilechange
 msgid "Mail Settings"
 msgstr "Mail Einstellungen"
 
-#: classes/noticeadminonprofilechange_menupage.php:102
+#: classes/noticeadminonprofilechange_menupage.php:116
 #@ noticeadminonprofilechange
 msgid "Mail Adress"
 msgstr "E-Mail Adresse"
 
-#: classes/noticeadminonprofilechange_menupage.php:108
+#: classes/noticeadminonprofilechange_menupage.php:122
 #@ noticeadminonprofilechange
 msgid "Subject"
 msgstr "Betreff"
 
-#: classes/noticeadminonprofilechange_menupage.php:114
+#: classes/noticeadminonprofilechange_menupage.php:128
 #@ noticeadminonprofilechange
 msgid "Send From Header"
 msgstr "Absender-Kopfzeile"
 
-#: classes/noticeadminonprofilechange_menupage.php:120
+#: classes/noticeadminonprofilechange_menupage.php:134
 #@ noticeadminonprofilechange
 msgid "Mail CC"
 msgstr "E-Mail CC"
 
-#: classes/noticeadminonprofilechange_menupage.php:126
+#: classes/noticeadminonprofilechange_menupage.php:140
 #@ noticeadminonprofilechange
 msgid "Mail BCC"
 msgstr "E-Mail BCC"
 
-#: classes/noticeadminonprofilechange_menupage.php:271
+#: classes/noticeadminonprofilechange_menupage.php:285
 #@ noticeadminonprofilechange
 msgid "Save Changes"
 msgstr "Änderungen speichern"
 
-#: classes/noticeadminonprofilechange_menupage.php:294
+#: classes/noticeadminonprofilechange_menupage.php:308
 #@ noticeadminonprofilechange
 msgid "Please enter the mail-adress where the report should be send to."
 msgstr "Bitte geben Sie die E-Mail Adresse ein an die der Bericht gesendet werden soll."
 
-#: classes/noticeadminonprofilechange_menupage.php:312
+#: classes/noticeadminonprofilechange_menupage.php:326
 #@ noticeadminonprofilechange
 msgid "Please enter the subject for the mails. Use {user} as placeholder for the username from the changed profile."
 msgstr "Bitte geben Sie den Betreff für die E-Mails ein. Benutzen Sie {user} als Platzhalter für den Namen des Benutzers dessen Profil geändert wurde."
 
-#: classes/noticeadminonprofilechange_menupage.php:334
+#: classes/noticeadminonprofilechange_menupage.php:348
 #@ noticeadminonprofilechange
 msgid "Use a send-from header"
 msgstr "Eine Absender-Kopfzeile verwenden"
 
-#: classes/noticeadminonprofilechange_menupage.php:343
+#: classes/noticeadminonprofilechange_menupage.php:357
 #@ noticeadminonprofilechange
 msgid "Enter the name of the sender if you wish to use a send-from header. This field is optional, you can leave it blank."
 msgstr "Bitte geben Sie den Namen des Absenders ein wenn eine Absender-Kopfzeile verwendet werden soll. Dieses Feld ist optional, Sie können es leer lassen."
 
-#: classes/noticeadminonprofilechange_menupage.php:354
+#: classes/noticeadminonprofilechange_menupage.php:368
 #@ noticeadminonprofilechange
 msgid "Enter the mail of the sender if you wish to use a send-from header. If this field is empty, the admin email will be used."
 msgstr "Bitte geben Sie die E-Mail Adresse des Absenders ein falls eine Absender-Kopfzeile verwendet wird. Wenn dieses Feld leer bleibt, wird die E-Mail Adresse des Administrators verwendet."
 
-#: classes/noticeadminonprofilechange_menupage.php:373
+#: classes/noticeadminonprofilechange_menupage.php:387
 #@ noticeadminonprofilechange
 msgid "If you wish to send the report as a CC, enter the adresses here. One adress per line!"
 msgstr "Wenn Sie den Bericht als Kopie (CarbonCopy; CC) versenden möchten, geben Sie bitte hier die E-Mail Adresse(n) ein. Eine Adresse je Zeile!"
 
-#: classes/noticeadminonprofilechange_menupage.php:393
+#: classes/noticeadminonprofilechange_menupage.php:407
 #@ noticeadminonprofilechange
 msgid "If you wish to send the report as a BCC, enter the adresses here. One adress per line!"
 msgstr "Wenn Sie den Bericht als Blindkopie (BlindCarbonCopy; BCC) versenden möchten, geben Sie hier die E-Mail Adresse(n) ein. Eine Adresse je Zeile!"
+
+#: classes/noticeadminonprofilechange_sendmail.php:83
+#@ noticeadminonprofilechange
+msgid "Changed fields"
+msgstr "Geänderte Felder"
+
+#: classes/noticeadminonprofilechange_sendmail.php:143
+#: classes/noticeadminonprofilechange_sendmail.php:176
+#@ noticeadminonprofilechange
+msgid "Group"
+msgstr "Gruppe"
+
+#: classes/noticeadminonprofilechange_sendmail.php:168
+#@ noticeadminonprofilechange
+msgid "User"
+msgstr "Benutzer"
 
