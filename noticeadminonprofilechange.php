@@ -25,7 +25,7 @@
  * License:     GPLv3
  */
 
-(! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 // NoticeAdminOnProfileChange
 
@@ -139,9 +139,12 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
-	$sendmail = new NoticeAdminOnProfileChange_SendMail( $user_id );
+	$sendmail = new NoticeAdminOnProfileChange_SendMail();
+
 	$sendmail->menupageobject = $pluginheaders->menupageobject;
 	$sendmail->textdomain     = $pluginheaders->TextDomain;
+
+	$sendmail->init( $user_id );
 	$sendmail->send( $data );
 
 }
@@ -190,15 +193,16 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 
 	}
 
+
 	// compare the data send via POST header with the saved data
 	if ( ! empty( $field_ids ) ) {
 
 		foreach ( $field_ids as $id ) {
 
-			$field = new BP_XProfile_Field( $id );
+			$field      = new BP_XProfile_Field( $id );
 			$field_name = $field->name;
-
-			$field_id = 'field_' . $id;
+			$field_id   = 'field_' . $id;
+			$group      = xprofile_get_field_group( $field->group_id );
 
 			$post_val = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : '';
 
@@ -213,7 +217,7 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 				$new_val = $data['new'][ $field_name ];
 
 				if ( $old_val != $new_val )
-					$data['changed'][ $field_name ] = $new_val;
+					$data['changed'][ $group->name ][ $field_name ] = $new_val;
 
 			}
 
@@ -221,9 +225,12 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 
 		$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
-		$sendmail = new NoticeAdminOnProfileChange_SendMail( $user );
+		$sendmail = new NoticeAdminOnProfileChange_SendMail();
+
 		$sendmail->menupageobject = $pluginheaders->menupageobject;
 		$sendmail->textdomain     = $pluginheaders->TextDomain;
+
+		$sendmail->init( $user );
 		$sendmail->send( $data );
 
 		$done = true;
