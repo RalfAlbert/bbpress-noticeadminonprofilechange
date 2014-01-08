@@ -4,6 +4,7 @@
  * @author Ralf Albert
  *
  */
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 if ( ! class_exists( 'I_PluginHeaderReader' ) ) {
 

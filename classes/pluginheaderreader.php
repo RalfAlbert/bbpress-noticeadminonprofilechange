@@ -20,6 +20,7 @@
  *
  * Reads the plugin header from a given file and stores the data
  */
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 if ( ! class_exists( 'PluginHeaderReader' ) ){
 

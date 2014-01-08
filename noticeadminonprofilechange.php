@@ -27,8 +27,6 @@
 
 ( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
-// NoticeAdminOnProfileChange
-
 add_action( 'plugins_loaded', 'noticeadminonprofilechange_init_plugin', 10, 0 );
 
 /**

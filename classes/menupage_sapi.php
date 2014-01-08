@@ -6,6 +6,7 @@
  * Class using the Settings API (SAPI) to create a menupage
  *
  */
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 if ( ! class_exists( 'MenuPage_SAPI' ) ) {
 

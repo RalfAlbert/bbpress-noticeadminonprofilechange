@@ -53,6 +53,7 @@
  * Formatter::set_delimiter( string $start_delimiter, string $end_delimiter );
  *
  */
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 if ( ! class_exists( 'Formatter' ) ) {
 

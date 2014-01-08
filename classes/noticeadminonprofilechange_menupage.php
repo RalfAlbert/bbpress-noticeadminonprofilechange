@@ -4,6 +4,7 @@
  * @author Ralf Albert
  *
  */
+( ! defined( 'ABSPATH' ) ) AND die( 'Standing OPn The Shoulders Of Giants' );
 
 require_once 'menupage_sapi.php';
 
