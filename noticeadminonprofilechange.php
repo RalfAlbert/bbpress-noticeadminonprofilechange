@@ -21,7 +21,7 @@
  * Description: Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile.
  * Author:      Ralf Albert
  * Author URI:  http://yoda.neun12.de/
- * Version:     1.0
+ * Version:     1.1.20140109
  * License:     GPLv3
  */
 
