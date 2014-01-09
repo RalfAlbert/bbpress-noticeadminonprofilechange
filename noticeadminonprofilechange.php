@@ -171,7 +171,7 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 	$field_ids = ( isset( $_POST['field_ids'] ) ) ? explode( ',', $_POST['field_ids'] ) : array ();
 	$user_id   = $user->user_id;
 
-	$data        = array ( 'old' => array(), 'new' => array(), 'changed' => array() );
+	$data        = array ( 'old' => array(), 'actual' => array(), 'new' => array(), 'changed' => array() );
 	$data['old'] = BP_XProfile_ProfileData::get_all_for_user( $user_id );
 
 	/*
@@ -191,31 +191,33 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 
 	}
 
-
 	// compare the data send via POST header with the saved data
 	if ( ! empty( $field_ids ) ) {
 
 		foreach ( $field_ids as $id ) {
 
-			$field      = new BP_XProfile_Field( $id );
-			$field_name = $field->name;
-			$field_id   = 'field_' . $id;
-			$group      = xprofile_get_field_group( $field->group_id );
+			$field    = new BP_XProfile_Field( $id );
+			$field_id = 'field_' . $id;
+			$group    = xprofile_get_field_group( $field->group_id );
 
 			$post_val = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : '';
 
 			if ( is_array( $post_val ) )
 				$post_val = implode( ',', $post_val );
 
-			$data['new'][ $field_name ] = $post_val;
+			$data['actual'][ $group->name ][ $field->name ] = $post_val;
 
-			if ( key_exists( $field_name, $data['old'] ) ) {
+			if ( key_exists( $field->name, $data['old'] ) ) {
 
-				$old_val = $data['old'][ $field_name ];
-				$new_val = $data['new'][ $field_name ];
+				$old_val = &$data['old'][ $field->name ];
+				$new_val = &$data['actual'][ $group->name ][ $field->name ];
 
 				if ( $old_val != $new_val )
-					$data['changed'][ $group->name ][ $field_name ] = $new_val;
+					$data['changed'][ $group->name ][ $field->name ] = $new_val;
+
+			} else {
+
+				$data['new'][ $group->name ][ $field->name ] = $post_val;
 
 			}
 
