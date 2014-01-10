@@ -174,7 +174,7 @@ class NoticeAdminOnProfileChange_SendMail
 		if ( isset( $this->template_files->mail_table ) && ! empty( $this->template_files->mail_table ) ) {
 
 			$template = $this->template_files->mail_table;
-			$pattern  = '#\[loop\](.+)\[/loop\]#';
+			$pattern  = '#\[loop\](.+)\[/loop\]#is';
 
 			preg_match( $pattern, $template, $result );
 			$head = preg_replace( $pattern, '', $template );
