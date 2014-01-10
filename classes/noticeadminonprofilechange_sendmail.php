@@ -332,7 +332,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 * Create an object with filename (w/o file extension) => filepath
 	 * @return object
 	 */
-	public function setup_template_files() {
+	protected function setup_template_files() {
 
 		$files = glob( $this->template_dir . '/*.txt' );
 
@@ -504,7 +504,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 * @throws Exception
 	 * @return string|bool	Returns the formated string or FALSE on failure
 	 */
-	public function sprintf( $format = '', $values = NULL, $delimiters = array() ) {
+	protected function sprintf( $format = '', $values = NULL, $delimiters = array() ) {
 
 		$delimiters = array_merge(
 			array( 'start_del' => '{{', 'end_del' => '}}' ),
