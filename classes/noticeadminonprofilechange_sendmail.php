@@ -15,12 +15,6 @@ class NoticeAdminOnProfileChange_SendMail
 {
 
 	/**
-	 * Formatter object
-	 * @var object
-	 */
-	protected $formatter = null;
-
-	/**
 	 * Container for the menupage object. This object is a connection
 	 * to the options stored in the database
 	 * @var object
@@ -70,14 +64,30 @@ class NoticeAdminOnProfileChange_SendMail
 	public $temp_csv_file = '';
 
 	/**
+	 * Directory path to the templates
+	 * @var string
+	 */
+	protected $template_dir = '';
+
+	/**
+	 * Available template files
+	 * @var array
+	 */
+	protected $template_files = array();
+
+	/**
 	 * The constructor setup the internal user object and the mail-templates
 	 */
 	public function __construct() {
 
-		$this->formatter = new Formatter();
-		$this->formatter->set_delimiter( '{', '}' );
+		$this->temp_csv_file  = WP_CONTENT_DIR . '/adminnotice_csv_temp.csv';
+		$this->template_dir   = dirname( dirname( __FILE__ ) ) . '/mail_templates';
+		$this->template_files = $this->setup_template_files();
 
-		$this->temp_csv_file = WP_CONTENT_DIR . '/adminnotice_csv_temp.csv';
+		/*
+		 * How to setup new delimiters for internal sprintf() function
+		 */
+// 		add_filter( 'noticeadminonprofilechange_set_delimiters', function( $delimiters ) { return array( 'start_del' => '[[', 'end_del' => ']]' ); }, 0, 1 );
 
 	}
 
@@ -90,9 +100,26 @@ class NoticeAdminOnProfileChange_SendMail
 
 		$this->setup_user( $user );
 
-		$this->mail_body  = __( 'Changed fields', $this->textdomain );
-		$this->mail_body .= sprintf( "\r\n%s\r\n", str_repeat( '=', 80 ) );
-		$this->mail_body .= '{changed}';
+		if ( isset( $this->template_files->mail_body ) && ! empty( $this->template_files->mail_body ) ) {
+
+			$values = new stdClass();
+			$values->_name_     = __( 'Name', $this->textdomain );
+			$values->_email_    = __( 'Email', $this->textdomain );
+			$values->_headline_ = __( 'changed this fields', $this->textdomain );
+			$values->user_name  = $this->user->name;
+			$values->user_email = $this->user->email;
+
+			$this->mail_body = $this->sprintf( $this->template_files->mail_body, $values );
+
+		} else {
+
+			$this->mail_body  = sprintf( '%s: %s', __( 'Name', $this->textdomain ), $this->user->name );
+			$this->mail_body .= sprintf( '%s: %s', __( 'Email', $this->textdomain ), $this->user->email );
+			$this->mail_body .= __( 'changed this fields', $this->textdomain );
+			$this->mail_body .= sprintf( "\r\n%s\r\n", str_repeat( '=', 80 ) );
+			$this->mail_body .= '{body}';
+
+		}
 
 	}
 
@@ -104,19 +131,20 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	public function send( $data ) {
 
-		if ( empty( $data['changed'] ) )
+		// no changed or new data to process
+		if ( empty( $data['changed'] ) && empty( $data['new'] ) )
 			return false;
 
 		$this->setup_maildata();
 
-		$message  = $this->formatter->sprintf(
+		$message  = $this->sprintf(
 				$this->mail_body,
 				array(
-						'changed' => $this->get_changed_values_table( $data['changed'] )
+						'table' => $this->get_mail_body_table( $data )
 				)
 		);
 
-		$this->get_attachment_csv( $data['changed'] );
+		$this->get_attachment_csv( $data );
 
 		$fileexists = file_exists( $this->temp_csv_file );
 
@@ -135,26 +163,71 @@ class NoticeAdminOnProfileChange_SendMail
 
 	/**
 	 * Creates an ascii table with the changed data (field name | new value)
-	 * Also creates the csv attachment
 	 *
 	 * @param		array		$data		Array with field values
 	 * @return	string					ASCII table with field names and new values
 	 */
-	protected function get_changed_values_table( $data ) {
+	protected function get_mail_body_table( $data ) {
 
-		$out = '';
+		$data_to_send = array_merge( $data['new'], $data['changed'] );
 
-		foreach ( $data as $group_name => $group ) {
+		if ( isset( $this->template_files->mail_table ) && ! empty( $this->template_files->mail_table ) ) {
 
-			$out .= sprintf(
-					"%s: %s\r\n%s\r\n",
-					__( 'Group', $this->textdomain ),
-					$group_name,
-					str_repeat( '-', 80 )
-			);
+			$template = $this->template_files->mail_table;
+			$pattern  = '#\[loop\](.+)\[/loop\]#';
 
-			foreach ( $group as $field => $value )
-				$out .= sprintf( "%s| %s\r\n", str_pad( $field, 39, ' '), $value );
+			preg_match( $pattern, $template, $result );
+			$head = preg_replace( $pattern, '', $template );
+
+			if ( is_array( $result ) && isset( $result[1] ) ) {
+
+				$row = $result[1];
+				unset( $result );
+
+			} else  {
+
+				$row = '{{filed}}|{{value}}';
+
+			}
+
+			$out = '';
+
+			foreach ( $data_to_send as $group_name => $group ) {
+
+				$values = new stdClass();
+				$values->_group_ = __( 'Group', $this->textdomain );
+				$values->group   = $group_name;
+
+				$out .= $this->sprintf( $head, $values );
+
+				foreach ( $group as $field => $value ) {
+
+					$values = new stdClass();
+					$values->field = str_pad( $field, 39, ' ');
+					$values->value = $value;
+
+					$out .= $this->sprintf( $row, $values );
+
+				}
+
+			}
+
+		} else {
+
+			$out = '';
+
+			foreach ( $data_to_send as $group_name => $group ) {
+
+				$out .= sprintf(
+						"%s: %s\r\n%s\r\n",
+						__( 'Group', $this->textdomain ),
+						$group_name,
+						str_repeat( '-', 80 )
+				);
+
+				foreach ( $group as $field => $value )
+					$out .= sprintf( "%s| %s\r\n", str_pad( $field, 39, ' '), $value );
+			}
 
 		}
 
@@ -169,24 +242,49 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	protected function get_attachment_csv( $data ) {
 
+		$data_to_send = array_merge( $data['new'], $data['changed'] );
+
 		$fp = fopen( $this->temp_csv_file, 'w+' );
 
 		if ( true == $fp ) {
 
-			fwrite( $fp, sprintf( "\"%s\":,\"%s\"\r\n", __( 'User', $this->textdomain), addslashes( $this->user->name ) ) );
+			fwrite(
+				$fp,
+				sprintf(
+					"\"%s\":,\"%s\"\r\n\"%s\":,\"%s\"\r\n",
+					__( 'User', $this->textdomain),
+					addslashes( $this->user->name ),
+					__( 'Email', $this->textdomain ),
+					addslashes( $this->user->email )
+				)
+			);
 
 			/*
 			 * field names and values are enclosed in double quotes and sanitized with addslashes()
 			 * if a field name or value contain an comma.
 			 */
-			foreach ( $data as $group_name => $group ) {
+			foreach ( $data_to_send as $group_name => $group ) {
 
-				fwrite( $fp, sprintf( "\"%s\":,\"%s\"\r\n", __( 'Group', $this->textdomain), addslashes( $group_name ) ) );
+				fwrite(
+					$fp,
+					sprintf(
+						"\"%s\":,\"%s\"\r\n",
+						__( 'Group', $this->textdomain),
+						addslashes( $group_name )
+					)
+				);
 
 				foreach( $group as $field => $value )
-					fwrite( $fp, sprintf( "\"%s\",\"%s\"\r\n", addslashes( $field ), addslashes( $value ) ) );
+					fwrite(
+						$fp,
+						sprintf(
+							"\"%s\",\"%s\"\r\n",
+							addslashes( $field ),
+							addslashes( $value )
+						)
+					);
 
-			}
+			} // end outer foreach
 
 			fclose( $fp );
 
@@ -212,11 +310,50 @@ class NoticeAdminOnProfileChange_SendMail
 		$userdata = get_userdata( $this->user->id );
 
 		if ( property_exists( $userdata, 'data' ) ) {
+
 			$this->user->name = ( property_exists( $userdata->data, 'user_login' ) ) ?
 				$userdata->data->user_login : __( 'Unknown', $this->textdomain );
+
+			$this->user->email = ( property_exists( $userdata->data, 'user_email' ) ) ?
+				$userdata->data->user_email : __( 'no-email@example.com', $this->textdomain );
+
+			$this->user->dname = ( property_exists( $userdata->data, 'display_name' ) ) ?
+				$userdata->data->display_name : __( 'Unknown', $this->textdomain );
+
 		} else {
-			$this->user->name = __( 'Unknown', $this->textdomain );
+
+			$this->user->name  = __( 'Unknown', $this->textdomain );
+			$this->user->email = __( 'no-email@example.com', $this->textdomain );
 		}
+
+	}
+
+	/**
+	 * Create an object with filename (w/o file extension) => filepath
+	 * @return object
+	 */
+	public function setup_template_files() {
+
+		$files = glob( $this->template_dir . '/*.txt' );
+
+		if ( is_array( $files ) && ! empty( $files ) ) {
+
+			foreach ( $files as $key => $file ) {
+				$new_key = str_replace( '.txt', '', basename( $file ) );
+				$files[ $new_key ] = file_get_contents( $file );
+				unset( $files[ $key ] );
+			}
+
+		} else {
+
+			$files = new stdClass();
+
+		}
+
+		$this->template_files = (object) $files;
+		unset( $files );
+
+		return $this->template_files;
 
 	}
 
@@ -228,12 +365,20 @@ class NoticeAdminOnProfileChange_SendMail
 		if ( ! is_object( $this->menupageobject ) || 'NoticeAdminOnProfileChange_MenuPage' != get_class( $this->menupageobject ) ) {
 
 			$this->mail_to      = get_option( 'admin_email' );
-			$this->mail_subject = $this->formatter->sprintf(
-					__( 'Profile from user {user} was changed', $this->textdomain ),
+
+			$subject_pattern = str_replace(
+					array( '{', '}' ),
+					array( '{{', '}}' ),
+					__( 'Profile from user {user} was changed', $this->textdomain )
+			);
+
+			$this->mail_subject = $this->sprintf(
+					$subject_pattern,
 					array(
-							'user' => $this->user->name
+							'user'         => $this->user->name
 					)
 			);
+
 			$this->mail_headers = false;
 
 		} else {
@@ -244,10 +389,11 @@ class NoticeAdminOnProfileChange_SendMail
 			// create mail-to and subject
 			$this->mail_to = $mpo->get_sanitized_optval( 'mail_to' );
 
-			$this->mail_subject = $this->formatter->sprintf(
-					$mpo->get_sanitized_optval( 'mail_subject' ),
+			$this->mail_subject = $this->sprintf(
+					str_replace( array( '{', '}' ), array( '{{', '}}' ), $mpo->get_sanitized_optval( 'mail_subject' ) ),
 					array(
-							'user' => $this->user->name
+							'user'         => $this->user->name,
+							'display_name' => $this->user->dname
 					)
 			);
 
@@ -261,15 +407,15 @@ class NoticeAdminOnProfileChange_SendMail
 					$mail = get_option( 'admin_email' );
 
 				if ( ! empty( $name ) && ! empty( $mail ) )
-					$pat = 'From: {name} <{mail}>';
+					$pat = 'From: {{name}} <{{mail}}>';
 				elseif( empty( $name ) && ! empty( $mail ) )
-					$pat = 'From: {mail}';
+					$pat = 'From: {{mail}}';
 				else
 					$pat = '';
 
 				if ( ! empty( $pat ) ) {
 
-					$this->mail_headers[] = $this->formatter->sprintf(
+					$this->mail_headers[] = $this->sprintf(
 							$pat,
 							array(
 									'name' => $name,
@@ -298,8 +444,8 @@ class NoticeAdminOnProfileChange_SendMail
 
 					foreach ( $carbon as $mail ) {
 
-						$this->mail_headers[] = $this->formatter->sprintf(
-								'{proto}: {mail}',
+						$this->mail_headers[] = $this->sprintf(
+								'{{proto}}: {{mail}}',
 								array(
 										'proto' => $proto,
 										'mail'  => $mail
@@ -347,6 +493,56 @@ class NoticeAdminOnProfileChange_SendMail
 
 		return ( ! empty( $sendfrom ) ) ?
 			$sendfrom : $mail;
+
+	}
+
+	/**
+	 *
+	 * Replacing values in a format-string
+	 * @param string $format
+	 * @param array|object $values
+	 * @throws Exception
+	 * @return string|bool	Returns the formated string or FALSE on failure
+	 */
+	public function sprintf( $format = '', $values = NULL, $delimiters = array() ) {
+
+		$delimiters = array_merge(
+			array( 'start_del' => '{{', 'end_del' => '}}' ),
+			apply_filters( 'noticeadminonprofilechange_set_delimiters', $delimiters )
+		);
+
+		extract( $delimiters );
+
+		/*
+		 * Do the replacement
+		 */
+		foreach ( $values as $key => $value ) {
+
+			$matches	= array();
+			$search_key	= sprintf( '%s%s%s', $start_del, $key, $end_del );
+			$pattern	= sprintf( '/%%%s\[(.*)\]%%/iU', $key );
+
+			// search for the values in format-string. find %key% or %key[format]%
+			preg_match_all( $pattern, $format, $matches );
+
+			// the '[format]' part was not found. replace only the key with the value
+			if ( empty( $matches[1] ) ) {
+				$format = str_replace( $search_key, $value, $format );
+			}
+			// one or more keys with a '[format]' part was found.
+			// walk over the formats and replace the key with a formated value
+			else {
+
+				foreach ( $matches[1] as $match ) {
+					$replace = sprintf( '%' . $match, $value );
+					$search = sprintf( '%s%s[%s]%s', $start_del, $key, $match, $end_del );
+					$format = str_replace( $search, $replace, $format );
+				}
+			}
+		}
+
+		// return the formatted string
+		return $format;
 
 	}
 

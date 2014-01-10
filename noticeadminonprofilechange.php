@@ -171,6 +171,12 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 	$field_ids = ( isset( $_POST['field_ids'] ) ) ? explode( ',', $_POST['field_ids'] ) : array ();
 	$user_id   = $user->user_id;
 
+	/*
+	 * old     => data stored in the db
+	 * new     => new data, formerly an empty field
+	 * actual  => data send by BuddyPress (the filtered POST header fields)
+	 * changed => data that are changed from an old value to a new value
+	 */
 	$data        = array ( 'old' => array(), 'actual' => array(), 'new' => array(), 'changed' => array() );
 	$data['old'] = BP_XProfile_ProfileData::get_all_for_user( $user_id );
 
@@ -222,7 +228,7 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 			}
 
 		}
-
+// die(var_dump($data));
 		$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
 		$sendmail = new NoticeAdminOnProfileChange_SendMail();
