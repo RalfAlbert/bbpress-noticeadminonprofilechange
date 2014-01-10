@@ -260,7 +260,6 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
  * Registering the activation- and uninstall hooks
  */
 register_activation_hook(	__FILE__, 'noticeadminonprofilechange_on_activation' );
-register_deactivation_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 register_uninstall_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 
 function noticeadminonprofilechange_on_activation(){
