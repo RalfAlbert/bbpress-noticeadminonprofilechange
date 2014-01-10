@@ -47,3 +47,22 @@ Der in den Tags `[loop]` und `[/loop]` eingeschlossene Text wird zur Bildung von
 	</table>
 
 Die Zeile mit `[loop] ... [/loop]` wird auf jeden Wert des Feldes angewendet.
+
+**Alle Zeilenumbrüche müssen genauso im Template angegeben werden wie sie in der Ausgabe erwartet werden!!**
+
+	[loop]{{value}}|[/loop]
+erzeugt die Ausgabe	
+
+	foo|bar|baz|
+
+Während hingegen
+
+	[loop]{{value}}
+	[/loop]
+die Ausgabe
+
+	foo
+	bar
+	baz
+erzeugt.
+ 

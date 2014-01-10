@@ -61,6 +61,7 @@ function noticeadminonprofilechange_init_plugin() {
 	 * before the 'edit_user_profile_update' and 'personal_options_update' hooks
 	 */
 	add_action( 'xprofile_data_before_save', 'noticeadminonprofilechange_on_xprofile_update', 10, 2 );
+	add_action( 'xprofile_data_before_delete', 'noticeadminonprofilechange_on_xprofile_update', 10, 2 );
 
 	add_action( 'personal_options_update',  'noticeadminonprofilechange_on_profile_update', 10, 2 );
 	add_action( 'edit_user_profile_update', 'noticeadminonprofilechange_on_profile_update', 10, 2 );
@@ -146,15 +147,7 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	}
 
-	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
-
-	$sendmail = new NoticeAdminOnProfileChange_SendMail();
-
-	$sendmail->menupageobject = $pluginheaders->menupageobject;
-	$sendmail->textdomain     = $pluginheaders->TextDomain;
-
-	$sendmail->init( $user_id );
-	$sendmail->send( $data );
+	noticeadminonprofilechange_sending_data( $data, $user_id );
 
 }
 
@@ -176,6 +169,8 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 	 */
 	static $done = false;
 
+	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
+
 	if ( ! bp_is_active( 'xprofile' ) || true == $done )
 		return false;
 
@@ -188,7 +183,7 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 	 * actual  => data send by BuddyPress (the filtered POST header fields)
 	 * changed => data that are changed from an old value to a new value
 	 */
-	$data        = array ( 'old' => array(), 'actual' => array(), 'new' => array(), 'changed' => array() );
+	$data        = array ( 'old' => array(), 'new' => array(), 'changed' => array() );
 	$data['old'] = BP_XProfile_ProfileData::get_all_for_user( $user_id );
 
 	/*
@@ -222,15 +217,13 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 			if ( is_array( $post_val ) )
 				$post_val = implode( ',', $post_val );
 
-			$data['actual'][ $group->name ][ $field->name ] = $post_val;
+			if ( empty( $post_val ) )
+				$post_val = __( '[Field was deleted]', $pluginheaders->TextDomain );
 
 			if ( key_exists( $field->name, $data['old'] ) ) {
 
-				$old_val = &$data['old'][ $field->name ];
-				$new_val = &$data['actual'][ $group->name ][ $field->name ];
-
-				if ( $old_val != $new_val )
-					$data['changed'][ $group->name ][ $field->name ] = $new_val;
+				if ( $data['old'][ $field->name ] != $post_val )
+					$data['changed'][ $group->name ][ $field->name ] = $post_val;
 
 			} else {
 
@@ -239,20 +232,33 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 			}
 
 		}
-// die(var_dump($data));
-		$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
-		$sendmail = new NoticeAdminOnProfileChange_SendMail();
-
-		$sendmail->menupageobject = $pluginheaders->menupageobject;
-		$sendmail->textdomain     = $pluginheaders->TextDomain;
-
-		$sendmail->init( $user );
-		$sendmail->send( $data );
+		noticeadminonprofilechange_sending_data( $data, $user );
 
 		$done = true;
 
 	}
+
+}
+
+/**
+ * Sending the data via email
+ * @param array $data Data to send
+ * @param int|object $user User ID or BuddyPress User object
+ */
+function noticeadminonprofilechange_sending_data( $data, $user ) {
+
+	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
+
+	$sendmail = new NoticeAdminOnProfileChange_SendMail();
+
+	$sendmail->menupageobject = $pluginheaders->menupageobject;
+	$sendmail->textdomain     = $pluginheaders->TextDomain;
+
+	$sendmail->init( $user );
+	$sendmail->send( $data );
+
+	return true;
 
 }
 
