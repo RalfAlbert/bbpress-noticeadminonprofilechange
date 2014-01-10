@@ -80,7 +80,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	public function __construct() {
 
-		$this->temp_csv_file  = WP_CONTENT_DIR . '/adminnotice_csv_temp.csv';
+		$this->temp_csv_file  = WP_CONTENT_DIR . '/adminnotice_csv.csv';
 		$this->template_dir   = dirname( dirname( __FILE__ ) ) . '/mail_templates';
 		$this->template_files = $this->setup_template_files();
 
