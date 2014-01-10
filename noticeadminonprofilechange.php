@@ -30,11 +30,9 @@
 add_action( 'plugins_loaded', 'noticeadminonprofilechange_init_plugin', 10, 0 );
 
 /**
- * Plugin Init
- *
- * Load classes and add hooks and filters
+ * Perform a basic initialization
  */
-function noticeadminonprofilechange_init_plugin() {
+function noticeadminonprofilechange_basic_init() {
 
 	$classes = glob( plugin_dir_path( __FILE__ ) . 'classes/*.php' );
 
@@ -43,9 +41,20 @@ function noticeadminonprofilechange_init_plugin() {
 
 	PluginHeaderReader::init( __FILE__, 'noticeadminonprofilechange' );
 
+}
+
+/**
+ * Plugin Init
+ *
+ * Load classes and add hooks and filters
+ */
+function noticeadminonprofilechange_init_plugin() {
+
+	noticeadminonprofilechange_basic_init();
+
 	// load textdomain and add menupage
 	add_action( 'init', 'noticeadminonprofilechange_textdomain', 10, 0 );
-	add_action( 'init', 'noticeadminonprofilechange_menupage', 10, 0 );
+	add_action( 'init', 'noticeadminonprofilechange_menupage', 11, 0 );
 
 	/*
 	 * If bbPress's xprofile are active, the 'xprofile_data_before_save' hook is triggered
@@ -65,11 +74,13 @@ function noticeadminonprofilechange_textdomain() {
 
 	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
-	load_plugin_textdomain(
+	$loaded = load_plugin_textdomain(
 		$pluginheaders->TextDomain,
 		false,
 		dirname( plugin_basename( __FILE__ ) ) . $pluginheaders->DomainPath
 	);
+
+	return $loaded;
 
 }
 
@@ -249,12 +260,21 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
  * Registering the activation- and uninstall hooks
  */
 register_activation_hook(	__FILE__, 'noticeadminonprofilechange_on_activation' );
+register_deactivation_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 register_uninstall_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 
 function noticeadminonprofilechange_on_activation(){
 
+	// perform a basic initialization and load the plugin textdomain
+	noticeadminonprofilechange_basic_init();
+	noticeadminonprofilechange_textdomain();
+
 	if ( ! class_exists( 'NoticeAdminOnProfileChange_MenuPage' ) )
 		require_once 'classes/noticeadminonprofilechange_menupage.php';
+
+	// get the pluginheaders to setup the textdomain for default values
+	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
+	NoticeAdminOnProfileChange_MenuPage::$textdomain_static = $pluginheaders->TextDomain;
 
 	$defaults = NoticeAdminOnProfileChange_MenuPage::get_default_options();
 	$key      = NoticeAdminOnProfileChange_MenuPage::OPTION_KEY;

@@ -23,8 +23,8 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	 * Var for the used textdomain
 	 * @var string
 	 */
-	protected $textdomain = '';
-	protected static $textdomain_static = '';
+	public $textdomain = '';
+	public static $textdomain_static = '';
 
 	/**
 	 * Option Name
