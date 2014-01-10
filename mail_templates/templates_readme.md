@@ -1,11 +1,11 @@
 # Formatierung und Platzhalter #
-Diser Text bezieht sich ausschließlich auf die in den hier verwendeten Templates.
+Dieser Text bezieht sich ausschließlich auf die hier verwendeten Templates im Ordner `mail_templates`
 
 ## Generelles ##
 Alle Platzhalter sind in Jango-Style anzugeben ( `{{platzhalter}}` )
 
 Bsp.:
-`{{user}}` -> gibt den Benutzernamen aus
+`{{user_name}}` -> gibt den Benutzernamen aus
 
 Platzhalter für bereits übersetzte Strings beginnen mit einem Unterstrich (_)
 
@@ -48,7 +48,8 @@ Der in den Tags `[loop]` und `[/loop]` eingeschlossene Text wird zur Bildung von
 
 Die Zeile mit `[loop] ... [/loop]` wird auf jeden Wert des Feldes angewendet.
 
-**Alle Zeilenumbrüche müssen genauso im Template angegeben werden wie sie in der Ausgabe erwartet werden!!**
+### Zeilenumbrüche ###
+**Achtung!!** Alle Zeilenumbrüche müssen genauso im Template angegeben werden wie sie in der Ausgabe erwartet werden!!
 
 	[loop]{{value}}|[/loop]
 erzeugt die Ausgabe	

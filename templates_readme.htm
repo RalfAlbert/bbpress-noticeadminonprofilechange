@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
-<title>readme</title>
+<title>templates_readme</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -292,11 +292,11 @@ img {
 </head>
 <body>
 <h1>Formatierung und Platzhalter</h1>
-<p>Diser Text bezieht sich ausschließlich auf die in den hier verwendeten Templates.</p>
+<p>Dieser Text bezieht sich ausschließlich auf die hier verwendeten Templates im Ordner <code>mail_templates</code></p>
 <h2>Generelles</h2>
 <p>Alle Platzhalter sind in Jango-Style anzugeben ( <code>{{platzhalter}}</code> )</p>
 <p>Bsp.:
-<code>{{user}}</code> -&gt; gibt den Benutzernamen aus</p>
+<code>{{user_name}}</code> -&gt; gibt den Benutzernamen aus</p>
 <p>Platzhalter für bereits übersetzte Strings beginnen mit einem Unterstrich (_)</p>
 <p>Bsp.:
 <code>{{_name_}}</code> -&gt; Gibt den mit <code>__( 'Name' )</code> im Code übersetzten String aus.</p>
@@ -334,6 +334,27 @@ müsste folgender Code verwendet werden:</p>
 </code></pre>
 
 <p>Die Zeile mit <code>[loop] ... [/loop]</code> wird auf jeden Wert des Feldes angewendet.</p>
+<h3>Zeilenumbrüche</h3>
+<p><strong>Achtung!!</strong> Alle Zeilenumbrüche müssen genauso im Template angegeben werden wie sie in der Ausgabe erwartet werden!!</p>
+<pre><code>[loop]{{value}}|[/loop]
+</code></pre>
+
+<p>erzeugt die Ausgabe	</p>
+<pre><code>foo|bar|baz|
+</code></pre>
+
+<p>Während hingegen</p>
+<pre><code>[loop]{{value}}
+[/loop]
+</code></pre>
+
+<p>die Ausgabe</p>
+<pre><code>foo
+bar
+baz
+</code></pre>
+
+<p>erzeugt.</p>
 
 
 
