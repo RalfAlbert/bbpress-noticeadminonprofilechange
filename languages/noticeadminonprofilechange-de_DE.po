@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Notice Admin On Profile Change v1.1.20140109\n"
+"Project-Id-Version: Notice Admin On Profile Change v1.2.20140110\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-01-10 02:32:49+0000\n"
+"PO-Revision-Date: 2014-01-10 02:34:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -185,6 +185,6 @@ msgstr "no-email@example.com"
 #. translators: plugin header field 'Version'
 #: noticeadminonprofilechange.php:0
 #@ noticeadminonprofilechange
-msgid "1.1.20140109"
-msgstr "1.1.20140109"
+msgid "1.2.20140110"
+msgstr "1.2.20140110"
 
