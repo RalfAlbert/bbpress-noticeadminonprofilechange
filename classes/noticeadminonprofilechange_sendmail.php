@@ -169,7 +169,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	protected function get_mail_body_table( $data ) {
 
-		$data_to_send = array_merge( $data['new'], $data['changed'] );
+		$data_to_send = $data_to_send = $this->merge_deep( $data, array( 'new', 'changed' ) ); //array_merge( $data['new'], $data['changed'] );
 
 		if ( isset( $this->template_files->mail_table ) && ! empty( $this->template_files->mail_table ) ) {
 
@@ -242,7 +242,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	protected function get_attachment_csv( $data ) {
 
-		$data_to_send = array_merge( $data['new'], $data['changed'] );
+		$data_to_send = $this->merge_deep( $data, array( 'new', 'changed' ) ); //array_merge( $data['new'], $data['changed'] );
 
 		$fp = fopen( $this->temp_csv_file, 'w+' );
 
@@ -351,6 +351,7 @@ class NoticeAdminOnProfileChange_SendMail
 		}
 
 		$this->template_files = (object) $files;
+
 		unset( $files );
 
 		return $this->template_files;
@@ -543,6 +544,35 @@ class NoticeAdminOnProfileChange_SendMail
 
 		// return the formatted string
 		return $format;
+
+	}
+
+	/**
+	 * Merges two assozitive arrays, keeps the indexes
+	 *
+	 * @param		array		$data			Array with data
+	 * @param		array		$indexes	Array with indexes to merge
+	 * @return	array		$new_data	Merged arrays
+	 */
+	protected function merge_deep( $data, $indexes ) {
+
+		$new_data = array();
+
+		foreach ( $indexes as $index ) {
+
+			foreach ( $data[ $index ] as $key => $fields ) {
+
+				if ( ! key_exists( $key, $new_data ) )
+					$new_data[ $key ] = $fields;
+
+				if ( key_exists( $key, $new_data ) )
+					$new_data[ $key ] = array_merge( $new_data[ $key ], $fields );
+
+			}
+
+		}
+
+		return  $new_data;
 
 	}
 
