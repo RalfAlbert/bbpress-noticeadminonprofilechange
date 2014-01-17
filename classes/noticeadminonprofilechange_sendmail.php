@@ -94,7 +94,7 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Setup the user and mail_body
 	 *
-	 * @param	integer|object	$user	Depending on the hook (wordpress standard or bbPress xprofile)
+	 * @param	integer|object $user Depending on the hook (wordpress standard or bbPress xprofile)
 	 */
 	public function init( $user = null ) {
 
@@ -126,8 +126,8 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Creates and send the report
 	 *
-	 * @param		array		$data		Array with the old, new and changed values
-	 * @return	boolean					False if no changed data was found
+	 * @param  array   $data Array with the old, new and changed values
+	 * @return boolean       False if no changed data was found
 	 */
 	public function send( $data ) {
 
@@ -164,8 +164,8 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Creates an ascii table with the changed data (field name | new value)
 	 *
-	 * @param		array		$data		Array with field values
-	 * @return	string					ASCII table with field names and new values
+	 * @param  array  $data Array with field values
+	 * @return string       ASCII table with field names and new values
 	 */
 	protected function get_mail_body_table( $data ) {
 
@@ -238,7 +238,7 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Creates the csv-file attachment
 	 *
-	 * @param		array		$data		Array with changed fields/values
+	 * @param array $data Array with changed fields/values
 	 */
 	protected function get_attachment_csv( $data ) {
 
@@ -296,7 +296,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 * Setup the internal user object. Extract the user id from an bbPress user object or
 	 * copy a given user id (integer)
 	 *
-	 * @param	object|integer	$user		The user object or user id
+	 * @param	object|integer $user The user object or user id
 	 */
 	protected function setup_user( $user = 0 ) {
 
@@ -470,8 +470,8 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Callback to set the correct From-Header name.
 	 *
-	 * @param		string	$name Name to insert into the from-header
-	 * @return	string				If it was set, the From-Header name. Else the name passed to the callback
+	 * @param  string $name Name to insert into the from-header
+	 * @return string       If it was set, the From-Header name. Else the name passed to the callback
 	 */
 	public function set_correct_from_header( $name ) {
 
@@ -485,8 +485,8 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Callback to set the correct From-Header name.
 	 *
-	 * @param		string	$mail Mail to insert into the from-header
-	 * @return	string				If it was set, the From-Header mail. Else the mail passed to the callback
+	 * @param  string $mail Mail to insert into the from-header
+	 * @return string       If it was set, the From-Header mail. Else the mail passed to the callback
 	 */
 	public function set_correct_from_mail( $mail ) {
 
@@ -500,10 +500,10 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 *
 	 * Replacing values in a format-string
-	 * @param string $format
-	 * @param array|object $values
+	 * @param  string       $format Format to use
+	 * @param  array|object $values Values to be inserted
 	 * @throws Exception
-	 * @return string|bool	Returns the formated string or FALSE on failure
+	 * @return string|bool	        Returns the formated string or FALSE on failure
 	 */
 	protected function sprintf( $format = '', $values = NULL, $delimiters = array() ) {
 
@@ -550,9 +550,9 @@ class NoticeAdminOnProfileChange_SendMail
 	/**
 	 * Merges two assozitive arrays, keeps the indexes
 	 *
-	 * @param		array		$data			Array with data
-	 * @param		array		$indexes	Array with indexes to merge
-	 * @return	array		$new_data	Merged arrays
+	 * @param  array $data     Array with data
+	 * @param  array $indexes	 Array with indexes to merge
+	 * @return array $new_data Merged arrays
 	 */
 	protected function merge_deep( $data, $indexes ) {
 

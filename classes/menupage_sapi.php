@@ -209,7 +209,7 @@ abstract class MenuPage_SAPI
 	/**
 	 * Validate saved options
 	 *
-	 * @param array $input Options send
+	 * @param  array $input Options send
 	 * @return array $input Validated options
 	 */
 	abstract public function validate_callback( $input );
