@@ -9,7 +9,7 @@
  * @subpackage BuddyPress
  * @author     Ralf Albert <me@neun12.de>
  * @license    GPLv3 http://www.gnu.org/licenses/gpl-3.0.txt
- * @version    1.0
+ * @version    1.3.20140116
  * @link       http://wordpress.com
  */
 
@@ -21,7 +21,7 @@
  * Description: Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile.
  * Author:      Ralf Albert
  * Author URI:  http://yoda.neun12.de/
- * Version:     1.2.20140116
+ * Version:     1.3.20140116
  * License:     GPLv3
  */
 
@@ -57,139 +57,15 @@ function noticeadminonprofilechange_init_plugin() {
 	add_action( 'init', 'noticeadminonprofilechange_menupage', 11, 0 );
 
 	/*
-	 * If bbPress's xprofile are active, the 'xprofile_data_before_save' hook is triggered
-	 * before the 'edit_user_profile_update' and 'personal_options_update' hooks
+	 * Hook into save action before any data is changed. Grab the new data from POST header
 	 */
-// 	add_action( 'xprofile_data_before_save', 'noticeadminonprofilechange_on_xprofile_update', 10, 2 );
-// 	add_action( 'xprofile_data_before_delete', 'noticeadminonprofilechange_on_xprofile_delete', 10, 2 );
-
-	add_action( 'personal_options_update',  'noticeadminonprofilechange_on_profile_update', 10, 2 );
-	add_action( 'edit_user_profile_update', 'noticeadminonprofilechange_on_profile_update', 10, 2 );
-
-
-/*
- * This hook is needed to fetch the old user data
- */
-add_action( 'bp_screens',                  'noticeadminonprofilechange_on_xprofile_update', 0, 1 );
-
-/*
- * This hooks are needed to fetch the saved / deleted data
- */
-add_action( 'xprofile_data_before_save',   'noticeadminonprofilechange_on_xprofile_update', 10, 1 );
-add_action( 'xprofile_data_before_delete', 'noticeadminonprofilechange_on_xprofile_update', 10, 1 );
-
-/*
- * This hook is needed to send the data via email
- */
-add_action( 'xprofile_updated_profile',    'noticeadminonprofilechange_on_xprofile_update', 10, 1 );
-
-}
-
-/**
- * Callback for hooks 'bp_screens', 'xprofile_data_before_save',
- * 'xprofile_data_before_delete' & 'xprofile_updated_profile'
- *
- * @param		object		$user	User object provided by BuddyPress
- * @return	boolean					False if the xprofile are not active
- */
-function noticeadminonprofilechange_on_xprofile_update( $user ) {
-
-	// check if Xprofile is acive
-	if ( ! bp_is_active( 'xprofile' ) )
-		return false;
-
-	// set up static data
-	static $data = array();
-	static $textdomain = '';
-
-	if ( empty( $textdomain ) ) {
-		$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
-		$textdomain = $pluginheaders->TextDomain;
-	}
-
-	$filter = current_filter();
+	add_action( 'bp_screens', 'noticeadminonprofilechange_on_xprofile_update', 0, 1 );
 
 	/*
-	 * Get the user ID
-	 * If the function is called by the hook 'bp_screens', no user-object is set.
-	 * We have to get the user-object with wp_get_current_user(). The user ID is stored in the
-	 * property 'ID' (uppercase)
-	 *
-	 * If the function is called by the hooks before_save and before_delete, the user-object is
-	 * provided by BuddyPress and the user ID is stored in the property 'id' (lowercase)
-	 *
-	 * If the function is called by the hook 'updated_profile', the user ID is an integer.
+	 * Hooks for the standard user profile
 	 */
-		switch ( $filter ) {
-
-			case 'bp_screens':
-	 			$user = wp_get_current_user();
-	 			$user_id = $user->ID;
- 			break;
-
- 			case 'xprofile_data_before_save':
- 			case 'xprofile_data_before_delete':
- 				$user_id = $user->id;
- 			break;
-
- 			case 'xprofile_updated_profile':
- 			default:
- 				$user_id = (int) $user;
- 			break;
-
-		}
-
-	// fetch the user data before any changes are made
-	if ( 'bp_screens' == $filter ) {
-		$old_data = BP_XProfile_ProfileData::get_all_for_user( $user_id );
-
-		foreach ( $old_data as $field_name => $field_data ) {
-
-			if ( ! is_array( $field_data ) )
-				continue;
-
-			$data['old'][ $field_data['field_id'] ]  = $field_data['field_data'];
-
-		}
-	}
-
-
-	//
-	if ( true == strpos( $filter, '_save' ) )
-		$key = 'new';
-	elseif ( true == strpos( $filter, '_delete' ) )
-		$key = 'deleted';
-	else
-		$key = '';
-
-	if ( is_object( $user ) && ! empty( $key ) ) {
-
-		$value = ( 'deleted' == $key ) ?
-			sprintf( '%s (%s)', __( '[Field was deleted]', $textdomain ), $user->value ) : $user->value;
-
-		$data[$key][$user->field_id] = $value;
-
-	}
-
-	// all data are saved/deleted, let's clean up some things and send the data via email
-	if ( 'xprofile_updated_profile' == $filter ) {
-
-		foreach ( $data['old'] as $field_id => $value ) {
-			if ( key_exists( $field_id, $data['new'] ) ) {
-
-				if ( $data['new'][ $field_id ] == $value )
-					unset( $data['new'][ $field_id ] );
-				else
-					$data['changed'][ $field_id ] = $value;
-
-			}
-		}
-
-		die( var_dump( $data ) );
-		noticeadminonprofilechange_sending_data( $data, $user_id );
-
-	}
-
+	add_action( 'personal_options_update',  'noticeadminonprofilechange_on_profile_update', 10, 2 );
+	add_action( 'edit_user_profile_update', 'noticeadminonprofilechange_on_profile_update', 10, 2 );
 
 }
 
@@ -218,6 +94,101 @@ function noticeadminonprofilechange_menupage() {
 
 	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 	$pluginheaders->menupageobject = new NoticeAdminOnProfileChange_MenuPage( $pluginheaders );
+
+}
+
+/**
+ * Callback for hook 'bp_screens'
+ *
+ * @param		object		$user	User object provided by BuddyPress
+ * @return	boolean					False if the xprofile are not active
+ */
+function noticeadminonprofilechange_on_xprofile_update( $user ) {
+
+	// check if Xprofile is acive
+	if ( function_exists( 'bp_is_active' ) && ! bp_is_active( 'xprofile' ) )
+		return false;
+
+
+	$data = array( 'new' => array(), 'changed' => array(), 'deleted' => array() );
+
+	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
+	$textdomain    = $pluginheaders->TextDomain;
+
+	$filter  = current_filter();
+	$user    = wp_get_current_user();
+	$user_id = ( is_object( $user ) && property_exists( $user, 'ID' ) ) ? (int) $user->ID : 0;
+
+	$old_data = BP_XProfile_ProfileData::get_all_for_user( $user_id );
+
+	/*
+	 *  convert the bbPress format into key-value format
+	 *  bbPress saves the fields as a complex array. we need a simple format
+	 *  to check if a value was changed
+	 */
+	foreach ( $old_data as $field_name => $value ) {
+
+		if ( ! is_array( $value ) )
+			continue;
+
+		$field_data = key_exists( 'field_data', $value ) ? maybe_unserialize( $value['field_data'] ) : '';
+		$field_id   = key_exists( 'field_id', $value ) ? (int) $value['field_id'] : 0;
+
+		$value =  ( is_array( $field_data ) ) ?
+			implode( ',', $field_data ) : $field_data;
+
+		$data['old'][ $field_id ] = $value;
+
+	}
+
+	unset( $old_data );
+
+	$field_ids = isset( $_POST['field_ids'] ) ?
+		explode( ',', filter_input( INPUT_POST, 'field_ids', FILTER_SANITIZE_STRING ) ) : array();
+
+	// compare the data send via POST header with the saved data
+	if ( ! empty( $field_ids ) ) {
+
+		foreach ( $field_ids as $id ) {
+
+			$key      = '';
+			$field    = new BP_XProfile_Field( $id );
+			$field_id = 'field_' . $id;
+			$group    = xprofile_get_field_group( $field->group_id );
+
+			$post_val = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : '';
+
+			if ( is_array( $post_val ) )
+				$post_val = implode( ',', $post_val );
+
+			// field was changed
+			if ( key_exists( $id, $data['old'] ) && ( $data['old'][ $id ] != $post_val ) ) {
+
+				// field was deleted
+				if ( empty( $post_val ) ) {
+					$value = __( '[Field was deleted]', $textdomain );
+					$key   = 'deleted';
+				} else {
+					$value = $post_val;
+					$key   = 'changed';
+				}
+
+			}
+
+			// field is new (empty field was filled out)
+			if ( ! key_exists( $id, $data['old'] ) && ! empty( $post_val ) ) {
+				$value = $post_val;
+				$key   = 'new';
+			}
+
+			if ( ! empty( $key ) )
+				$data[ $key ][ $group->name ][ $field->name ] = $value;
+
+		}
+
+	} // endif
+
+		noticeadminonprofilechange_sending_data( $data, $user_id );
 
 }
 
@@ -277,92 +248,23 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 }
 
 /**
- * Callback for hook 'xprofile_data_before_save'
- *
- * @param		object		$user	User object provided by BuddyPress
- * @return	boolean					False if the xprofile are not active
+ * Sending the data via email
+ * @param array $data Data to send
+ * @param int|object $user User ID or BuddyPress User object
  */
-function _on_xprofile_update( $user, $deleted_data = array() ) {
-
-	/*
-	 * This flag prevent running the function more than once.
-	 *
-	 * The hook 'xprofile_data_before_save' will be called for each field to save.
-	 * Unfortunatly this is the only hook which is triggered BEFORE the fields are saved.
-	 * If we want to catch the old values, we have to hook in BEFORE the values are saved,
-	 * unfortunately this is the only hook we can use.
-	 */
-	static $done = false;
+function noticeadminonprofilechange_sending_data( $data, $user ) {
 
 	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
 
-	if ( ! bp_is_active( 'xprofile' ) || true == $done )
-		return false;
+	$sendmail = new NoticeAdminOnProfileChange_SendMail();
 
-	$field_ids = ( isset( $_POST['field_ids'] ) ) ? explode( ',', $_POST['field_ids'] ) : array ();
-	$user_id   = $user->user_id;
+	$sendmail->menupageobject = $pluginheaders->menupageobject;
+	$sendmail->textdomain     = $pluginheaders->TextDomain;
 
-	/*
-	 * old     => data stored in the db
-	 * new     => new data, formerly an empty field
-	 * actual  => data send by BuddyPress (the filtered POST header fields)
-	 * changed => data that are changed from an old value to a new value
-	 */
-	$data        = array ( 'old' => array(), 'new' => array(), 'changed' => array(), 'deleted' => $deleted_data );
-	$data['old'] = BP_XProfile_ProfileData::get_all_for_user( $user_id );
+	$sendmail->init( $user );
+	$sendmail->send( $data );
 
-	/*
-	 *  convert the bbPress format into key-value format
-	 *  bbPress saves the fields as a complex array. we need a simple format
-	 *  to check if a value was changed
-	 */
-	foreach ( $data['old'] as $field => &$value ) {
-
-		if ( ! is_array( $value ) )
-			continue;
-
-		$field_data = maybe_unserialize( $value['field_data'] );
-
-		$value =  ( is_array( $field_data ) ) ?
-			implode( ',', $field_data ) : $field_data;
-
-	}
-
-	// compare the data send via POST header with the saved data
-	if ( ! empty( $field_ids ) ) {
-
-		foreach ( $field_ids as $id ) {
-
-			$field    = new BP_XProfile_Field( $id );
-			$field_id = 'field_' . $id;
-			$group    = xprofile_get_field_group( $field->group_id );
-
-			$post_val = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : '';
-
-			if ( is_array( $post_val ) )
-				$post_val = implode( ',', $post_val );
-
-			if ( empty( $post_val ) )
-				$post_val = __( '[Field was deleted]', $pluginheaders->TextDomain );
-
-			if ( key_exists( $field->name, $data['old'] ) ) {
-
-				if ( $data['old'][ $field->name ] != $post_val )
-					$data['changed'][ $group->name ][ $field->name ] = $post_val;
-
-			} else {
-
-				$data['new'][ $group->name ][ $field->name ] = $post_val;
-
-			}
-
-		}
-
-		noticeadminonprofilechange_sending_data( $data, $user );
-
-		$done = true;
-
-	}
+	return true;
 
 }
 
