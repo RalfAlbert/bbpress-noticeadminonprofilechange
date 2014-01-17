@@ -9,7 +9,7 @@
  * @subpackage BuddyPress
  * @author     Ralf Albert <me@neun12.de>
  * @license    GPLv3 http://www.gnu.org/licenses/gpl-3.0.txt
- * @version    1.3.20140116
+ * @version    1.4.20140117
  * @link       http://wordpress.com
  */
 
