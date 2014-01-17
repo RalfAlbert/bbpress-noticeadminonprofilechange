@@ -151,7 +151,7 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	/**
 	 * Validate saved options
 	 *
-	 * @param array $input Options send
+	 * @param  array $input Options send
 	 * @return array $input Validated options
 	 */
 	public function validate_callback( $input ) {
@@ -199,8 +199,8 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	/**
 	 * Helper function to create name and id attribute for input fields
 	 *
-	 * @param string $name Name of the field
-	 * @return string
+	 * @param  string $name   Name of the field
+	 * @return string $string HTML attribute with name and id
 	 */
 	public function get_name_arg( $name='' ) {
 		return sprintf( ' name="%1$s[%2$s]" id="%1$s-%2$s"', $this->option_name, $name );
@@ -209,8 +209,8 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	/**
 	 * Helper function to create a label tag
 	 *
-	 * @param string $name Name of the label
-	 * @return string
+	 * @param  string $name   Name of the label
+	 * @return string $string HTML label tag
 	 */
 	public function get_label( $name='' ) {
 		return sprintf( '<label for="%s-%s">', $this->option_name, $name );
@@ -228,9 +228,9 @@ class NoticeAdminOnProfileChange_MenuPage extends MenuPage_SAPI
 	/**
 	 * Returns an option value and convert it into the requested type
 	 *
-	 * @param string $name	Name of the option
-	 * @param string $type	Type to convert it into
-	 * @return mixed	Depending on the convertion
+	 * @param  string $name Name of the option
+	 * @param  string $type Type to convert it into
+	 * @return mixed        Depending on the convertion
 	 */
 	public function get_sanitized_optval( $name = '', $type = '' ) {
 

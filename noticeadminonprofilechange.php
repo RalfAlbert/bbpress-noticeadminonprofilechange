@@ -21,7 +21,7 @@
  * Description: Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile.
  * Author:      Ralf Albert
  * Author URI:  http://yoda.neun12.de/
- * Version:     1.3.20140116
+ * Version:     1.4.20140117
  * License:     GPLv3
  */
 
@@ -100,8 +100,8 @@ function noticeadminonprofilechange_menupage() {
 /**
  * Callback for hook 'bp_screens'
  *
- * @param		object		$user	User object provided by BuddyPress
- * @return	boolean					False if the xprofile are not active
+ * @param  object  $user User object provided by BuddyPress
+ * @return boolean       False if the xprofile are not active
  */
 function noticeadminonprofilechange_on_xprofile_update( $user ) {
 
@@ -195,20 +195,22 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 /**
  * Callback for hook 'profile_update'
  *
- * @param		integer	$user_id	ID of the user which profile was updated
- * @param		array		$olddata	Array with the old data
+ * @param integer $user_id ID of the user which profile was updated
+ * @param array   $olddata Array with the old data
  */
 function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = array() ) {
 
 	if ( empty( $user_id ) )
 		return;
 
-	$postdata = $_POST;
-	$data     = array ( 'old' => array(), 'new' => array(), 'changed' => array() );
+	$pluginheaders = PluginHeaderReader::get_instance( 'noticeadminonprofilechange' );
+	$textdomain    = $pluginheaders->TextDomain;
+
+	$data     = array ( 'old' => array(), 'new' => array(), 'changed' => array(), 'deleted' => array() );
 
 	if ( empty( $olddata ) ) {
 		$user = get_userdata( $user_id );
-		$data['old'] = (array) $user->data;
+		$data['old'] = property_exists( $user, 'data' ) ? (array) $user->data : array();
 	} else {
 		$data['old'] = $olddata;
 	}
@@ -217,6 +219,7 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	$usermetas = get_user_meta( $user_id );
 
+	// merge usermetas with old data
 	foreach ( $usermetas as $key => $value ) {
 
 		if ( ! isset( $data['old'][ $key ] ) ) {
@@ -231,14 +234,39 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	}
 
-	foreach ( $postdata as $key => $value ) {
+	// on standard profiles there are no groups, set a dummy group
+	$group = __( 'Standard Profile', $textdomain );
+	$skip  = array(
+			'password', 'pass2', 'rich_editing', 'admin_colors', 'comment_shortcuts', 'admin_bar_front'
+	);
 
-		if ( key_exists( $key, $data['old'] ) ) {
-			$data['new'][ $key ] = $value;
+	foreach ( $data['old'] as $index => $old ) {
 
-			if ( $data['old'][ $key ] != $value )
-				$data['changed'][ $key ] = $value;
+		// skip unwanted field changes like password change
+		if ( in_array( $index, $skip ) )
+			continue;
 
+		$key = '';
+		$new = filter_input( INPUT_POST, $index );
+
+		if ( ! empty( $new ) ) {
+			if ( ( $new != $old ) && ! empty( $old ) ) {
+				$value = &$new;
+				$key   = 'changed';
+			} elseif ( ( $new != $old ) && empty( $old ) ) {
+				$value = &$new;
+				$key   = 'new';
+			}
+		}
+
+		if ( ( empty( $new ) && ! empty( $old ) ) && key_exists( $index, $_POST ) ) {
+			$value = __( '[Field was deleted]', $textdomain );
+			$key   = 'deleted';
+		}
+
+		if ( ! empty( $key ) ) {
+			$index = noticeadminonprofilechange_maybe_translated( $index );
+			$data[ $key ][ $group ][ $index ] = $value;
 		}
 
 	}
@@ -249,7 +277,7 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 /**
  * Sending the data via email
- * @param array $data Data to send
+ * @param array      $data Data to send
  * @param int|object $user User ID or BuddyPress User object
  */
 function noticeadminonprofilechange_sending_data( $data, $user ) {
@@ -268,6 +296,28 @@ function noticeadminonprofilechange_sending_data( $data, $user ) {
 
 }
 
+/**
+ * Returns a translated version of the index if available
+ * @param  string $index String to translate
+ * @return string	$index Translated string or original string if no translation is available
+ */
+function noticeadminonprofilechange_maybe_translated( $index = '' ) {
+
+	$strings = array(
+			'first_name'   => __( 'First Name' ),
+			'last_name'    => __( 'Last Name' ),
+			'nickname'     => __( 'Nickname' ),
+			'display_name' => __( 'Display name publicly as' ),
+			'email'        =>  __( 'E-mail' ),
+			'url'          => __( 'Website' ),
+			'description'  => __( 'About the user' ),
+
+	);
+
+	return ( key_exists( $index, $strings ) ) ?
+		$strings[ $index ] : $index;
+
+}
 
 /**
  * Registering the activation- and uninstall hooks
@@ -275,6 +325,9 @@ function noticeadminonprofilechange_sending_data( $data, $user ) {
 register_activation_hook(	__FILE__, 'noticeadminonprofilechange_on_activation' );
 register_uninstall_hook(  __FILE__, 'noticeadminonprofilechange_on_uninstall' );
 
+/**
+ * Actions on plugin activation
+ */
 function noticeadminonprofilechange_on_activation(){
 
 	// perform a basic initialization and load the plugin textdomain
@@ -294,6 +347,10 @@ function noticeadminonprofilechange_on_activation(){
 	add_option( $key, $defaults );
 
 }
+
+/**
+ * Actions on plugin uninstall
+ */
 
 function noticeadminonprofilechange_on_uninstall(){
 

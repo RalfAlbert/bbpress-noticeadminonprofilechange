@@ -46,9 +46,9 @@ class PluginHeaderReader implements I_PluginHeaderReader, IteratorAggregate
 
 	/**
 	 * Reads the plugin header from given filename
-	 * @param string $filename File with plugin header
-	 * @return boolean False if the file does not exists
-	 * @return boolean Returns false on error or true on success
+	 * @param  string  $filename File with plugin header
+	 * @return boolean           False if the file does not exists
+	 * @return boolean           Returns false on error or true on success
 	 */
 	public static function init( $filename = '', $id = '' ) {
 
@@ -101,8 +101,8 @@ class PluginHeaderReader implements I_PluginHeaderReader, IteratorAggregate
 
 	/**
 	 * Returns a value
-	 * @param string $name Name of the value
-	 * @return mixed The value if it is set, else null
+	 * @param  string $name Name of the value
+	 * @return mixed        The value if it is set, else null
 	 */
 	public function __get( $name ) {
 
@@ -121,7 +121,7 @@ class PluginHeaderReader implements I_PluginHeaderReader, IteratorAggregate
 
 	/**
 	 * Set a value
-	 * @param string $name Name of the value
+	 * @param string $name  Name of the value
 	 * @param string $value The value itself
 	 */
 	public function __set( $name, $value = null ) {
@@ -146,8 +146,8 @@ class PluginHeaderReader implements I_PluginHeaderReader, IteratorAggregate
 
 	/**
 	 * Implements the isset() functionality to check if a propperty is set with isset()
-	 * @param string $name Name of the propperty to check
-	 * @return boolean True if the popperty is set, else false
+	 * @param  string  $name Name of the propperty to check
+	 * @return boolean       True if the popperty is set, else false
 	 */
 	public function __isset( $name ) {
 
@@ -166,7 +166,7 @@ class PluginHeaderReader implements I_PluginHeaderReader, IteratorAggregate
 
 	/**
 	 * Returns the iterator
-	 * @return \ArrayIterator
+	 * @return ArrayIterator
 	 */
 	public function getIterator() {
 

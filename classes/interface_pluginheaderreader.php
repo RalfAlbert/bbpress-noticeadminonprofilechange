@@ -12,8 +12,8 @@ interface I_PluginHeaderReader
 {
 	/**
 	 * Reads the plugin header from given filename
-	 * @param string $filename File with plugin header
-	 * @return boolean False if the file does not exists
+	 * @param  string  $filename File with plugin header
+	 * @return boolean           False if the file does not exists
 	 */
 	public static function init( $filename = '', $id = '' );
 
@@ -25,15 +25,15 @@ interface I_PluginHeaderReader
 
 	/**
 	 * Magic get; returns the value if it is set
-	 * @param string $value Value to be retrieved
+	 * @param  string $value Value to be retrieved
 	 * @return string $value The value if set or empty string
 	 */
 	public function __get( $value );
 
 	/**
 	 * Sets a value
-	 * @param string $name Name of the value
-	 * @param mixed $value Value to be set
+	 * @param string $name  Name of the value
+	 * @param mixed  $value Value to be set
 	 */
 	public function __set( $name, $value = null );
 
