@@ -21,7 +21,7 @@
  * Description: Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile.
  * Author:      Ralf Albert
  * Author URI:  http://yoda.neun12.de/
- * Version:     1.4.20140116
+ * Version:     1.4.20140117
  * License:     GPLv3
  */
 
@@ -236,11 +236,14 @@ function noticeadminonprofilechange_on_profile_update( $user_id = 0, $olddata = 
 
 	// on standard profiles there are no groups, set a dummy group
 	$group = __( 'Standard Profile', $textdomain );
+	$skip  = array(
+			'password', 'pass2', 'rich_editing', 'admin_colors', 'comment_shortcuts', 'admin_bar_front'
+	);
 
 	foreach ( $data['old'] as $index => $old ) {
 
-		// skip password change
-		if ( 'password' == $index || 'pass2' == $index )
+		// skip unwanted field changes like password change
+		if ( in_array( $index, $skip ) )
 			continue;
 
 		$key = '';

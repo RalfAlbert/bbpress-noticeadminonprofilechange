@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Notice Admin On Profile Change v1.2.20140110\n"
+"Project-Id-Version: Notice Admin On Profile Change v1.4.20140117\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-01-10 05:11:16+0000\n"
+"PO-Revision-Date: 2014-01-17 06:47:06+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Textdomain-Support: yes"
 
 #: classes/noticeadminonprofilechange_menupage.php:187
-#: classes/noticeadminonprofilechange_sendmail.php:372
+#: classes/noticeadminonprofilechange_sendmail.php:373
 #@ noticeadminonprofilechange
 msgid "Profile from user {user} was changed"
 msgstr "Profil von Benutzer {user} wurde geändert"
@@ -68,7 +68,7 @@ msgstr "http://yoda.neun12.de/"
 #: classes/menupage_sapi.php:173
 #@ noticeadminonprofilechange
 msgid "Section #"
-msgstr ""
+msgstr "Abschnitt Nr."
 
 #: classes/noticeadminonprofilechange_menupage.php:94
 #@ noticeadminonprofilechange
@@ -182,14 +182,55 @@ msgstr "hat diese Felder geändert"
 msgid "no-email@example.com"
 msgstr "no-email@example.com"
 
-#. translators: plugin header field 'Version'
-#: noticeadminonprofilechange.php:0
-#@ noticeadminonprofilechange
-msgid "1.2.20140110"
-msgstr "1.2.20140110"
-
-#: noticeadminonprofilechange.php:221
+#: noticeadminonprofilechange.php:169
+#: noticeadminonprofilechange.php:263
 #@ noticeadminonprofilechange
 msgid "[Field was deleted]"
 msgstr "[Feld wurde gelöscht]"
+
+#: noticeadminonprofilechange.php:238
+#@ noticeadminonprofilechange
+msgid "Standard Profile"
+msgstr "Standard Profil"
+
+#: noticeadminonprofilechange.php:307
+#@ default
+msgid "First Name"
+msgstr ""
+
+#: noticeadminonprofilechange.php:308
+#@ default
+msgid "Last Name"
+msgstr ""
+
+#: noticeadminonprofilechange.php:309
+#@ default
+msgid "Nickname"
+msgstr ""
+
+#: noticeadminonprofilechange.php:310
+#@ default
+msgid "Display name publicly as"
+msgstr ""
+
+#: noticeadminonprofilechange.php:311
+#@ default
+msgid "E-mail"
+msgstr ""
+
+#: noticeadminonprofilechange.php:312
+#@ default
+msgid "Website"
+msgstr ""
+
+#: noticeadminonprofilechange.php:313
+#@ default
+msgid "About the user"
+msgstr ""
+
+#. translators: plugin header field 'Version'
+#: noticeadminonprofilechange.php:0
+#@ noticeadminonprofilechange
+msgid "1.4.20140117"
+msgstr "1.4.20140117"
 
