@@ -132,7 +132,7 @@ class NoticeAdminOnProfileChange_SendMail
 	public function send( $data ) {
 
 		// no changed or new data to process
-		if ( empty( $data['changed'] ) && empty( $data['new'] ) )
+		if ( empty( $data['changed'] ) && empty( $data['new'] ) && empty( $data['deleted'] ) )
 			return false;
 
 		$this->setup_maildata();
@@ -169,7 +169,7 @@ class NoticeAdminOnProfileChange_SendMail
 	 */
 	protected function get_mail_body_table( $data ) {
 
-		$data_to_send = $data_to_send = $this->merge_deep( $data, array( 'new', 'changed' ) ); //array_merge( $data['new'], $data['changed'] );
+		$data_to_send = $this->merge_deep( $data, array( 'new', 'changed', 'deleted' ) );
 
 		if ( isset( $this->template_files->mail_table ) && ! empty( $this->template_files->mail_table ) ) {
 
@@ -298,14 +298,14 @@ class NoticeAdminOnProfileChange_SendMail
 	 *
 	 * @param	object|integer	$user		The user object or user id
 	 */
-	protected function setup_user( $user = null ) {
+	protected function setup_user( $user = 0 ) {
 
 		$this->user = new stdClass();
 
-		if ( is_object( $user ) && property_exists( $user, 'user_id' ) )
-			$this->user->id = (int) $user->user_id;
-		else
-			$this->user->id = ( int ) $user;
+// 		if ( is_object( $user ) && property_exists( $user, 'user_id' ) )
+// 			$this->user->id = (int) $user->user_id;
+// 		else
+		$this->user->id = ( int ) $user;
 
 		$userdata = get_userdata( $this->user->id );
 
@@ -560,13 +560,16 @@ class NoticeAdminOnProfileChange_SendMail
 
 		foreach ( $indexes as $index ) {
 
+			if ( ! key_exists( $index, $data ) )
+				continue;
+
 			foreach ( $data[ $index ] as $key => $fields ) {
 
 				if ( ! key_exists( $key, $new_data ) )
-					$new_data[ $key ] = $fields;
+					$new_data[ $key ] = (array) $fields;
 
 				if ( key_exists( $key, $new_data ) )
-					$new_data[ $key ] = array_merge( $new_data[ $key ], $fields );
+					$new_data[ $key ] = array_merge( $new_data[ $key ], (array) $fields );
 
 			}
 
