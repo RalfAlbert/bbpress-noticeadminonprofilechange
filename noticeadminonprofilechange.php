@@ -156,6 +156,10 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 			$field_id = 'field_' . $id;
 			$group    = xprofile_get_field_group( $field->group_id );
 
+			// get the damned dateboxes under control
+			if ( 'datebox' === $field->type )
+				noticeadminonprofilechange_get_datebox( $id );
+
 			$post_val = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : '';
 
 			if ( is_array( $post_val ) )
@@ -189,6 +193,15 @@ function noticeadminonprofilechange_on_xprofile_update( $user ) {
 	} // endif
 
 		noticeadminonprofilechange_sending_data( $data, $user_id );
+
+}
+
+function noticeadminonprofilechange_get_datebox( $field_id ) {
+
+	if ( !isset( $_POST['field_' . $field_id] ) ) {
+		if ( !empty( $_POST['field_' . $field_id . '_day'] ) && !empty( $_POST['field_' . $field_id . '_month'] ) && !empty( $_POST['field_' . $field_id . '_year'] ) )
+			$_POST['field_' . $field_id] = date( 'Y-m-d H:i:s', strtotime( $_POST['field_' . $field_id . '_day'] . $_POST['field_' . $field_id . '_month'] . $_POST['field_' . $field_id . '_year'] ) );
+	}
 
 }
 
