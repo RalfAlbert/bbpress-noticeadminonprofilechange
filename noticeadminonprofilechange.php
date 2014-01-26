@@ -9,7 +9,7 @@
  * @subpackage BuddyPress
  * @author     Ralf Albert <me@neun12.de>
  * @license    GPLv3 http://www.gnu.org/licenses/gpl-3.0.txt
- * @version    1.4.20140117
+ * @version    1.4.20140126
  * @link       http://wordpress.com
  */
 
@@ -21,7 +21,7 @@
  * Description: Notices the admin via e-mail if a profile was changed. Works with the normal WordPress userprofile and the BuddyPress XProfile.
  * Author:      Ralf Albert
  * Author URI:  http://yoda.neun12.de/
- * Version:     1.4.20140117
+ * Version:     1.4.20140126
  * License:     GPLv3
  */
 
